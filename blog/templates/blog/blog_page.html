@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}blog-detail-page{% endblock %}
+
+{% block content %}
+<article class="blog-detail">
+    <h1>{{ page.title }}</h1>
+    <p class="meta">
+        {{ page.date }}
+        {% if page.categories.all %}
+         &middot;
+        {% for cat in page.categories.all %}
+            {{ cat.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+        {% endif %}
+    </p>
+
+    {% if page.featured_image %}
+    <div class="mb-3">
+        {% image page.featured_image width-800 as detail_img %}
+        <img src="{{ detail_img.url }}" alt="{{ page.title }}" />
+    </div>
+    {% endif %}
+
+    <div class="body richtext-body">
+        {% for block in page.body %}
+            {% if block.block_type == "heading" %}
+                <h2>{{ block.value }}</h2>
+            {% elif block.block_type == "paragraph" %}
+                {{ block.value }}
+            {% elif block.block_type == "quote" %}
+                <blockquote>{{ block.value }}</blockquote>
+            {% elif block.block_type == "image" %}
+                {% image block.value width-800 as body_img %}
+                <img src="{{ body_img.url }}" alt="" loading="lazy" />
+            {% elif block.block_type == "embed" %}
+                {{ block.value }}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if page.gallery_images.all %}
+    <div class="gallery-grid mt-3">
+        {% for item in page.gallery_images.all %}
+        <div class="gallery-item">
+            {% image item.image fill-400x400 as gal_img %}
+            <img src="{{ gal_img.url }}" alt="{{ item.caption }}" loading="lazy" />
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if page.tags.all %}
+    <div class="tags">
+        {% for tag in page.tags.all %}
+        <a href="{{ page.get_parent.url }}?tag={{ tag }}" class="tag"
+           hx-get="{{ page.get_parent.url }}?tag={{ tag }}"
+           hx-target="#main-content"
+           hx-swap="innerHTML transition:true"
+           hx-push-url="true">
+            {{ tag }}
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</article>
+{% endblock %}

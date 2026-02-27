@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}gallery-page{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">{{ page.title }}</h1>
+        {% if page.intro %}
+        <div class="section-intro richtext-body">{{ page.intro|richtext }}</div>
+        {% endif %}
+
+        <div class="gallery-grid">
+            {% for item in page.artwork_images.all %}
+            <div class="gallery-item">
+                {% image item.image fill-600x600 as gallery_img %}
+                <img src="{{ gallery_img.url }}" alt="{{ item.caption }}" loading="lazy" />
+                <div class="overlay">
+                    <div>
+                        {% if item.caption %}<p class="caption">{{ item.caption }}</p>{% endif %}
+                        <p class="meta">
+                            {% if item.medium %}{{ item.medium }}{% endif %}
+                            {% if item.year %} &middot; {{ item.year }}{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

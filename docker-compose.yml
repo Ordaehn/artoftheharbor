@@ -1,0 +1,33 @@
+services:
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             gunicorn artoftheharbor.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    volumes:
+      - media:/app/media
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: artoftheharbor
+      POSTGRES_USER: artoftheharbor
+      POSTGRES_PASSWORD: artoftheharbor
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U artoftheharbor"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  media:

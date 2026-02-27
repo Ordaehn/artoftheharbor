@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}blog-index{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">{{ page.title }}</h1>
+        {% if page.intro %}
+        <div class="section-intro richtext-body">{{ page.intro|richtext }}</div>
+        {% endif %}
+
+        <div class="blog-list">
+            {% for post in posts %}
+            <a href="{% pageurl post %}" class="blog-card"
+               hx-get="{% pageurl post %}"
+               hx-target="#main-content"
+               hx-swap="innerHTML transition:true"
+               hx-push-url="true">
+                {% if post.specific.featured_image %}
+                    {% image post.specific.featured_image fill-700x400 as card_img %}
+                    <img src="{{ card_img.url }}" alt="{{ post.title }}" loading="lazy" />
+                {% endif %}
+                <div class="card-body">
+                    <h3>{{ post.title }}</h3>
+                    <p class="date">{{ post.specific.date }}</p>
+                    <p class="intro">{{ post.specific.intro }}</p>
+                </div>
+            </a>
+            {% empty %}
+            <p class="text-muted">No posts yet. Check back soon!</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

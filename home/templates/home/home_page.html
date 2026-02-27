@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}home-page{% endblock %}
+
+{% block content %}
+{# Hero #}
+<section class="hero"
+    {% if page.hero_image %}
+    style="background-image: url('{% image page.hero_image width-1920 as hero_bg %}{{ hero_bg.url }}');"
+    {% endif %}>
+    <div class="hero-content">
+        <h1>{{ page.hero_title }}</h1>
+        {% if page.hero_subtitle %}
+        <p class="subtitle">{{ page.hero_subtitle }}</p>
+        {% endif %}
+        {% if page.hero_cta_link %}
+        <a href="{% pageurl page.hero_cta_link %}" class="btn"
+           hx-get="{% pageurl page.hero_cta_link %}"
+           hx-target="#main-content"
+           hx-swap="innerHTML transition:true"
+           hx-push-url="true">
+            {{ page.hero_cta_text }}
+        </a>
+        {% endif %}
+    </div>
+</section>
+
+{# Intro #}
+{% if page.intro %}
+<section class="section">
+    <div class="container">
+        <div class="section-intro richtext-body">{{ page.intro|richtext }}</div>
+    </div>
+</section>
+{% endif %}
+
+{# Featured Works #}
+{% if page.featured_works.all %}
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Featured Works</h2>
+        <div class="featured-grid">
+            {% for item in page.featured_works.all %}
+            <div class="featured-item">
+                {% if item.image %}
+                    {% image item.image fill-600x450 as feat_img %}
+                    <img src="{{ feat_img.url }}" alt="{{ item.caption }}" loading="lazy" />
+                {% endif %}
+                {% if item.caption %}
+                <div class="caption">
+                    {% if item.link %}
+                    <a href="{% pageurl item.link %}"
+                       hx-get="{% pageurl item.link %}"
+                       hx-target="#main-content"
+                       hx-swap="innerHTML transition:true"
+                       hx-push-url="true">
+                        {{ item.caption }}
+                    </a>
+                    {% else %}
+                        {{ item.caption }}
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# Philosophy #}
+{% if page.philosophy_statement %}
+<section class="section philosophy">
+    <div class="container">
+        <blockquote>{{ page.philosophy_statement|richtext }}</blockquote>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
