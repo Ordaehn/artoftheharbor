@@ -32,9 +32,16 @@ body {
     color: var(--color-text);
     line-height: 1.6;
     min-height: 100vh;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url("/static/images/ArtoftheHarborBackground.png") center / cover no-repeat;
+    opacity: 0.8;
+    z-index: -1;
+    pointer-events: none;
 }
 
 img {
@@ -522,6 +529,26 @@ a:hover {
     line-height: 1.7;
     color: var(--color-light-blue);
     font-style: italic;
+}
+
+/* =============================================
+   Under Construction Banner
+   ============================================= */
+
+.under-construction {
+    padding: 1rem 0;
+    text-align: center;
+    background: var(--color-navy);
+    border-top: 2px solid var(--color-light-blue);
+    border-bottom: 2px solid var(--color-light-blue);
+}
+
+.under-construction p {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--color-light-blue);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 /* =============================================

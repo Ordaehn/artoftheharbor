@@ -1,18 +1,20 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags %}
+
+{% block title %}Contact Me{% endblock %}
+{% block nav_contact_active %} active{% endblock %}
 
 {% block body_class %}contact-page{% endblock %}
 
 {% block content %}
 <section class="section">
     <div class="container">
-        <h1 class="section-title">{{ page.title }}</h1>
-        {% if page.intro %}
-        <div class="section-intro richtext-body">{{ page.intro|richtext }}</div>
+        <h1 class="section-title">Contact Me</h1>
+        {% if content and content.intro %}
+        <div class="section-intro">{{ content.intro|linebreaks }}</div>
         {% endif %}
 
         <div class="contact-form">
-            <form action="{% pageurl page %}" method="POST">
+            <form action="{% url 'contact:contact' %}" method="POST">
                 {% csrf_token %}
                 {% for field in form %}
                 <div class="form-group">

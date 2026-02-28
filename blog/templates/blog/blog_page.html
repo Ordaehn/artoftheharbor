@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
+{% block title %}{{ page.title }}{% endblock %}
+{% block title_suffix %} — Art of the Harbor{% endblock %}
+{% block nav_blog_active %} active{% endblock %}
+
 {% block body_class %}blog-detail-page{% endblock %}
 
 {% block content %}

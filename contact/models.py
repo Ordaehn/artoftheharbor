@@ -1,40 +1,28 @@
 from django.db import models
 
-from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
-from wagtail.contrib.forms.models import AbstractEmailForm, AbstractFormField
-from wagtail.fields import RichTextField
 
-from modelcluster.fields import ParentalKey
-
-
-class FormField(AbstractFormField):
-    page = ParentalKey("ContactPage", on_delete=models.CASCADE, related_name="form_fields")
-
-
-class ContactPage(AbstractEmailForm):
-    intro = RichTextField(blank=True)
-    thank_you_text = RichTextField(blank=True)
-
-    content_panels = AbstractEmailForm.content_panels + [
-        FieldPanel("intro"),
-        InlinePanel("form_fields", label="Form Fields"),
-        FieldPanel("thank_you_text"),
-        MultiFieldPanel(
-            [
-                FieldRowPanel(
-                    [
-                        FieldPanel("from_address", classname="col6"),
-                        FieldPanel("to_address", classname="col6"),
-                    ]
-                ),
-                FieldPanel("subject"),
-            ],
-            heading="Email Settings",
-        ),
-    ]
-
-    parent_page_types = ["home.HomePage"]
-    subpage_types = []
+class ContactPageContent(models.Model):
+    intro = models.TextField(blank=True)
+    thank_you_text = models.TextField(blank=True)
+    email_to = models.EmailField(blank=True, help_text="Email address to receive contact form submissions")
 
     class Meta:
-        verbose_name = "Contact Page"
+        verbose_name = "Contact Page Content"
+        verbose_name_plural = "Contact Page Content"
+
+    def __str__(self):
+        return "Contact Page"
+
+
+class ContactSubmission(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    message = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-submitted_at"]
+        verbose_name = "Contact Submission"
+
+    def __str__(self):
+        return f"{self.name} — {self.submitted_at:%Y-%m-%d %H:%M}"

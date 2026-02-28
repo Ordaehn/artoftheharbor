@@ -1,57 +1,58 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}Home{% endblock %}
+{% block title_suffix %} — Art of the Harbor{% endblock %}
 
 {% block body_class %}home-page{% endblock %}
 
 {% block content %}
 {# Hero #}
 <section class="hero"
-    {% if page.hero_image %}
-    style="background-image: url('{% image page.hero_image width-1920 as hero_bg %}{{ hero_bg.url }}');"
+    {% if content and content.hero_image %}
+    style="background-image: url('{{ content.hero_image.url }}');"
     {% endif %}>
     <div class="hero-content">
-        <h1>{{ page.hero_title }}</h1>
-        {% if page.hero_subtitle %}
-        <p class="subtitle">{{ page.hero_subtitle }}</p>
+        <h1>{{ content.hero_title|default:"Art of the Harbor" }}</h1>
+        {% if content and content.hero_subtitle %}
+        <p class="subtitle">{{ content.hero_subtitle }}</p>
         {% endif %}
-        {% if page.hero_cta_link %}
-        <a href="{% pageurl page.hero_cta_link %}" class="btn"
-           hx-get="{% pageurl page.hero_cta_link %}"
+        {% if content and content.hero_cta_link %}
+        <a href="{{ content.hero_cta_link }}" class="btn"
+           hx-get="{{ content.hero_cta_link }}"
            hx-target="#main-content"
            hx-swap="innerHTML transition:true"
            hx-push-url="true">
-            {{ page.hero_cta_text }}
+            {{ content.hero_cta_text|default:"View My Work" }}
         </a>
         {% endif %}
     </div>
 </section>
 
 {# Intro #}
-{% if page.intro %}
+{% if content and content.intro %}
 <section class="section">
     <div class="container">
-        <div class="section-intro richtext-body">{{ page.intro|richtext }}</div>
+        <div class="section-intro">{{ content.intro|linebreaks }}</div>
     </div>
 </section>
 {% endif %}
 
 {# Featured Works #}
-{% if page.featured_works.all %}
+{% if featured_works %}
 <section class="section">
     <div class="container">
         <h2 class="section-title">Featured Works</h2>
         <div class="featured-grid">
-            {% for item in page.featured_works.all %}
+            {% for item in featured_works %}
             <div class="featured-item">
                 {% if item.image %}
-                    {% image item.image fill-600x450 as feat_img %}
-                    <img src="{{ feat_img.url }}" alt="{{ item.caption }}" loading="lazy" />
+                <img src="{{ item.image.url }}" alt="{{ item.caption }}" loading="lazy" />
                 {% endif %}
                 {% if item.caption %}
                 <div class="caption">
                     {% if item.link %}
-                    <a href="{% pageurl item.link %}"
-                       hx-get="{% pageurl item.link %}"
+                    <a href="{{ item.link }}"
+                       hx-get="{{ item.link }}"
                        hx-target="#main-content"
                        hx-swap="innerHTML transition:true"
                        hx-push-url="true">
@@ -70,10 +71,10 @@
 {% endif %}
 
 {# Philosophy #}
-{% if page.philosophy_statement %}
+{% if content and content.philosophy_statement %}
 <section class="section philosophy">
     <div class="container">
-        <blockquote>{{ page.philosophy_statement|richtext }}</blockquote>
+        <blockquote>{{ content.philosophy_statement|linebreaks }}</blockquote>
     </div>
 </section>
 {% endif %}

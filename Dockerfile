@@ -32,4 +32,4 @@ USER wagtail
 # Collect static files (uses dummy secret key if not set).
 RUN DJANGO_SETTINGS_MODULE=artoftheharbor.settings.dev python manage.py collectstatic --noinput --clear
 
-CMD set -xe; python manage.py migrate --noinput; gunicorn artoftheharbor.wsgi:application
+CMD set -xe; python manage.py migrate --noinput; python manage.py setup_blog; gunicorn artoftheharbor.wsgi:application

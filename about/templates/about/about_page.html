@@ -1,36 +1,34 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block title %}About{% endblock %}
+{% block nav_about_active %} active{% endblock %}
 
 {% block body_class %}about-page{% endblock %}
 
 {% block content %}
 <section class="section">
     <div class="container">
-        <h1 class="section-title">{{ page.title }}</h1>
-        {% if page.subtitle %}
-        <p class="section-intro">{{ page.subtitle }}</p>
+        <h1 class="section-title">About</h1>
+        {% if content and content.subtitle %}
+        <p class="section-intro">{{ content.subtitle }}</p>
         {% endif %}
 
         <div class="about-layout">
             <div class="about-portrait">
-                {% if page.portrait_image %}
-                    {% image page.portrait_image fill-500x667 as portrait %}
-                    <img src="{{ portrait.url }}" alt="{{ page.title }}" />
+                {% if content and content.portrait_image %}
+                <img src="{{ content.portrait_image.url }}" alt="About" />
                 {% endif %}
             </div>
-            <div class="about-body richtext-body">
-                {% for block in page.body %}
-                    {% if block.block_type == "heading" %}
-                        <h2>{{ block.value }}</h2>
-                    {% elif block.block_type == "paragraph" %}
-                        {{ block.value }}
-                    {% elif block.block_type == "quote" %}
-                        <blockquote>{{ block.value }}</blockquote>
-                    {% elif block.block_type == "image" %}
-                        {% image block.value width-700 as about_img %}
-                        <img src="{{ about_img.url }}" alt="" loading="lazy" />
-                    {% endif %}
-                {% endfor %}
+            <div class="about-body">
+                {% if content and content.bio_heading %}
+                <h2>{{ content.bio_heading }}</h2>
+                {% endif %}
+                {% if content and content.bio_text %}
+                {{ content.bio_text|linebreaks }}
+                {% endif %}
+                {% if content and content.quote %}
+                <blockquote>{{ content.quote }}</blockquote>
+                {% endif %}
             </div>
         </div>
     </div>

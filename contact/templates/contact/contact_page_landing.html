@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags %}
+
+{% block title %}Thank You{% endblock %}
+{% block nav_contact_active %} active{% endblock %}
 
 {% block body_class %}contact-page{% endblock %}
 
@@ -7,9 +9,13 @@
 <section class="section">
     <div class="container text-center">
         <h1 class="section-title">Thank You</h1>
-        <div class="section-intro richtext-body">{{ page.thank_you_text|richtext }}</div>
-        <a href="/" class="btn mt-3"
-           hx-get="/"
+        {% if content and content.thank_you_text %}
+        <div class="section-intro">{{ content.thank_you_text|linebreaks }}</div>
+        {% else %}
+        <p>Your message has been sent. We'll get back to you soon!</p>
+        {% endif %}
+        <a href="{% url 'home:home' %}" class="btn mt-3"
+           hx-get="{% url 'home:home' %}"
            hx-target="#main-content"
            hx-swap="innerHTML transition:true"
            hx-push-url="true">

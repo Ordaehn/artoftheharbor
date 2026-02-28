@@ -43,7 +43,7 @@ class BlogIndexPage(Page):
         FieldPanel("intro"),
     ]
 
-    parent_page_types = ["home.HomePage"]
+    parent_page_types = ["wagtailcore.Page"]
     subpage_types = ["blog.BlogPage"]
 
     def get_context(self, request, *args, **kwargs):

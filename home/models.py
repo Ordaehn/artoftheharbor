@@ -1,75 +1,33 @@
 from django.db import models
 
-from modelcluster.fields import ParentalKey
-from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
-from wagtail.fields import RichTextField
-from wagtail.images import get_image_model_string
-from wagtail.models import Orderable, Page
 
-
-class HomePage(Page):
-    hero_image = models.ForeignKey(
-        get_image_model_string(),
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-    hero_title = models.CharField(max_length=255, blank=True, default="Art of the Harbor")
+class HomePageContent(models.Model):
+    hero_image = models.ImageField(upload_to="home/", blank=True)
+    hero_title = models.CharField(max_length=255, default="Art of the Harbor")
     hero_subtitle = models.CharField(max_length=255, blank=True)
-    hero_cta_text = models.CharField(
-        "CTA button text", max_length=50, blank=True, default="View My Work"
-    )
-    hero_cta_link = models.ForeignKey(
-        "wagtailcore.Page",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
-    intro = RichTextField(blank=True)
-    philosophy_statement = RichTextField(blank=True)
-
-    content_panels = Page.content_panels + [
-        MultiFieldPanel(
-            [
-                FieldPanel("hero_image"),
-                FieldPanel("hero_title"),
-                FieldPanel("hero_subtitle"),
-                FieldPanel("hero_cta_text"),
-                FieldPanel("hero_cta_link"),
-            ],
-            heading="Hero Section",
-        ),
-        FieldPanel("intro"),
-        InlinePanel("featured_works", label="Featured Works"),
-        FieldPanel("philosophy_statement"),
-    ]
+    hero_cta_text = models.CharField("CTA button text", max_length=50, default="View My Work")
+    hero_cta_link = models.URLField(blank=True, help_text="URL for the CTA button")
+    intro = models.TextField(blank=True)
+    philosophy_statement = models.TextField(blank=True)
 
     class Meta:
-        verbose_name = "Home Page"
+        verbose_name = "Home Page Content"
+        verbose_name_plural = "Home Page Content"
+
+    def __str__(self):
+        return "Home Page"
 
 
-class HomePageFeaturedWork(Orderable):
-    page = ParentalKey(HomePage, on_delete=models.CASCADE, related_name="featured_works")
-    image = models.ForeignKey(
-        get_image_model_string(),
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
+class FeaturedWork(models.Model):
+    image = models.ImageField(upload_to="home/featured/")
     caption = models.CharField(max_length=255, blank=True)
-    link = models.ForeignKey(
-        "wagtailcore.Page",
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="+",
-    )
+    link = models.URLField(blank=True)
+    sort_order = models.PositiveIntegerField(default=0)
 
-    panels = [
-        FieldPanel("image"),
-        FieldPanel("caption"),
-        FieldPanel("link"),
-    ]
+    class Meta:
+        ordering = ["sort_order"]
+        verbose_name = "Featured Work"
+        verbose_name_plural = "Featured Works"
+
+    def __str__(self):
+        return self.caption or f"Featured Work #{self.pk}"
